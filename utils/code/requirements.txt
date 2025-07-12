@@ -1,0 +1,7 @@
+torch
+torchvision
+accelerate
+diffusers
+transformers
+mlflow
+deepspeed

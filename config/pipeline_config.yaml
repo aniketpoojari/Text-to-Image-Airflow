@@ -1,0 +1,58 @@
+data:
+  train_size: 30
+  val_size: 3
+  raw_data_path: "data/raw/flowers.zip"
+
+vae:
+  image_size: "128,128"
+  learning_rate: 5e-5
+
+unet:
+  image_size: "16,16"
+  in_channels: 4
+  out_channels: 4
+  down_block_types: "CrossAttnDownBlock2D,DownBlock2D,CrossAttnDownBlock2D"
+  up_block_types: "CrossAttnUpBlock2D,UpBlock2D,CrossAttnUpBlock2D"
+  mid_block_type: "UNetMidBlock2DCrossAttn"
+  block_out_channels: "64,128,256"
+  layers_per_block: 2
+  norm_num_groups: 32
+  cross_attention_dim: 512
+  attention_head_dim: 12
+  dropout: 0.1
+  time_embedding_type: "positional"
+  act_fn: "silu"
+  learning_rate: 1e-3
+
+ddpm_scheduler:
+  T: 300
+
+clip:
+  max_length: 77
+
+training:
+  batch_size: 4
+  weight_decay: 1e-4
+  num_epochs: 1
+
+mlflow:
+  experiment_name: "Training"
+  run_name: "airflow_run"
+  registered_model_name: "Diffusion"
+  server_uri: "https://dagshub.com/aniketpoojari/Text-To-Image-Diffusion.mlflow"
+  s3_mlruns_bucket: "text-to-image-aniket-mlflow"
+  tracking_username: "aniketpoojari"
+  tracking_password: "38fa619a54d7cdde5e6dcaa55a01a1c14f329bc2"
+
+sagemaker:
+  role: "arn:aws:iam::975050169307:role/text-to-image-role"
+  instance_count: 2
+  instance_type: "ml.p3.xlarge"
+  framework_version: "2.6.0"
+  py_version: "py312"
+  max_wait: 7200
+  max_run: 7200
+  use_spot_instances: true
+  s3_train_data: "s3://text-to-image-aniket/"
+  entry_point: "training_sagemaker_deepspeed.py"
+  source_dir: "code"
