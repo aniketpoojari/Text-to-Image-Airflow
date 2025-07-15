@@ -1,6 +1,5 @@
 import torch
 import os
-import numpy as np
 from transformers import CLIPTextModel, CLIPTokenizer
 from typing import Dict, Any
 

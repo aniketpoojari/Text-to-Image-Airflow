@@ -27,9 +27,9 @@ class ConversionOrchestrator:
         try:
             # Call utils layer with validated config
             result = self.model_converter.convert_to_torchserve(
-                vae_path="saved_models/vae.pth",
-                diffuser_path="saved_models/diffuser.pth",
-                output_dir="saved_models/torchserve"
+                vae_path="models/vae.pth",
+                diffuser_path="models/diffuser.pth",
+                output_dir="models"
             )
             
             execution_time = time.time() - start_time

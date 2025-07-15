@@ -39,14 +39,14 @@ class ModelDownloader:
                 raise Exception("No finished runs found in the experiment")
             
             # Find the best run based on validation VAE loss
-            if "metrics.val_vae_loss" not in finished_runs.columns:
+            if "metrics.val_diffuser_loss" not in finished_runs.columns:
                 raise Exception("No validation VAE loss metric found in runs")
             
-            best_run = finished_runs.loc[finished_runs["metrics.val_vae_loss"].idxmin()]
+            best_run = finished_runs.loc[finished_runs["metrics.val_diffuser_loss"].idxmin()]
             best_run_id = best_run['run_id']
             
             print(f"Best run ID: {best_run_id}")
-            print(f"Best VAE loss: {best_run['metrics.val_vae_loss']}")
+            print(f"Best VAE loss: {best_run['metrics.val_diffuser_loss']}")
             
             # Download models from S3
             bucket_name = config.mlflow.s3_mlruns_bucket
@@ -56,12 +56,9 @@ class ModelDownloader:
             diffuser_s3_key = f"{best_run_id}/diffuser.pth"
             
             # Define local paths
-            vae_local_path = "saved_models/vae.pth"
-            diffuser_local_path = "saved_models/diffuser.pth"
-            
-            # Create saved_models directory if it doesn't exist
-            os.makedirs("saved_models", exist_ok=True)
-            
+            vae_local_path = "models/vae.pth"
+            diffuser_local_path = "models/diffuser.pth"
+                        
             # Download VAE model
             print(f"Downloading VAE model from s3://{bucket_name}/{vae_s3_key}")
             self.s3_client.download_file(bucket_name, vae_s3_key, vae_local_path)

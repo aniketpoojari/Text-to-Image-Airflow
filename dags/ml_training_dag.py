@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+
 from orchestrators.data_orchestrator import DataOrchestrator
 from orchestrators.training_orchestrator import TrainingOrchestrator
 from orchestrators.model_orchestrator import ModelOrchestrator
@@ -22,7 +23,7 @@ default_args = {
 
 # Create DAG
 dag = DAG(
-    'ml_training_pipeline_v3',
+    'ml_training_pipeline',
     default_args=default_args,
     description='ML Training Pipeline with Three-Layer Architecture',
     schedule_interval='@weekly',
@@ -75,4 +76,5 @@ convert_model = PythonOperator(
 )
 
 # Set dependencies
-upload_data >> training_job >> download_model >> convert_model
+# upload_data >> training_job >> download_model >> 
+convert_model

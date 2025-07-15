@@ -1,9 +1,6 @@
 import sagemaker
 from sagemaker.pytorch import PyTorch
 from datetime import datetime
-import tempfile
-import yaml
-import os
 from typing import Dict, Any
 from orchestrators.config_models import PipelineConfig
 
@@ -22,8 +19,8 @@ class TrainingManager:
                 "TRAIN_SIZE": str(config.data.train_size),
                 "VAL_SIZE": str(config.data.val_size),
                 "VAE_IMAGE_SIZE": config.vae.image_size,
-                "MAX_LENGTH": str(config.data.max_length),
-                "BATCH_SIZE": str(config.data.batch_size),
+                "MAX_LENGTH": str(config.clip.max_length),
+                "BATCH_SIZE": str(config.training.batch_size),
                 "T": str(config.ddpm_scheduler.T),
                 "UNET_IMAGE_SIZE": config.unet.image_size,
                 "IN_CHANNELS": str(config.unet.in_channels),
@@ -87,7 +84,7 @@ class TrainingManager:
             estimator.fit(inputs=data_channels, logs="minimal")
             
             # Create training completion marker
-            self._create_completion_marker()
+            # self._create_completion_marker()
             
             return {
                 "training_status": "completed",

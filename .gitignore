@@ -1,1 +1,5 @@
-data
+data/raw/*
+logs/*
+models/*.pth
+models/onnx_models/*.onnx
+.env

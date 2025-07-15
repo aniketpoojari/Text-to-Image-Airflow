@@ -1,0 +1,11 @@
+torch==2.0.0
+torchvision==0.15.1
+transformers==4.33.2
+sagemaker==2.178.0
+apache-airflow
+mlflow
+pandas
+numpy
+pydantic
+PyYAML
+onnx

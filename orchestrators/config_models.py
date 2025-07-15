@@ -98,6 +98,4 @@ class TaskResult(BaseModel):
     task_name: str = Field(description="Task name")
     status: str = Field(description="Task status")
     message: str = Field(description="Task message")
-    artifacts: Optional[Dict[str, Any]] = Field(description="Task artifacts")
     execution_time: Optional[float] = Field(description="Execution time in seconds")
-    timestamp: datetime = Field(default_factory=datetime.now)
