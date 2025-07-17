@@ -1,16 +1,17 @@
 # 🧠 Diffusion-Based Text-to-Image Generation
 
-A robust, production-ready Generative AI system for **generating realistic images from text prompts using diffusion models**. This platform enables end-to-end automation—covering dataset preparation, fully distributed training, validation, experiment tracking, and scalable deployment for inference. The architecture prioritizes modularity, reproducibility, and extensible engineering, targeting real-world research and production needs in generative AI.
+This robust, production-ready Generative AI platform specializes in text-to-image generation powered by diffusion models. By utilizing advanced model architectures such as UNet, variational autoencoders (VAEs), and CLIP text encoders, the system precisely translates natural language prompts into realistic and high-quality images. These modeling components work together to enable controllable image synthesis, supporting both cutting-edge research and real-world deployment scenarios.
 
-Below the surface, the pipeline integrates Amazon SageMaker for scalable distributed training across GPU clusters, MLflow for comprehensive experiment and artifacts tracking, Airflow for orchestration of the entire ML lifecycle, ONNX export for high-performance inference (including TorchServe compatibility), and S3-based data and model management. All processes are fully containerized, with Python best practices (including FastAPI/Pydantic validation and tightly managed dependencies) ensuring maintainability and cloud portability.
+The platform’s core machine learning workflow leverages Amazon SageMaker for scalable distributed training across GPU clusters, ensuring rapid experimentation and cost-effective development. MLflow manages every aspect of experiment tracking—logging hyperparameters, model checkpoints, and performance metrics for full reproducibility. Apache Airflow orchestrates the entire lifecycle, automating data preparation, model training, artifact management, and deployment. For seamless inference, models are exported to ONNX format, making them compatible with systems like TorchServe. Strict configuration validation and environment management is achieved using Pydantic-backed YAML files, providing schema enforcement, reliable deployments, and simplified experimentation.
 
 ## 🚀 Features
 
-- **Advanced Modeling**: Custom diffusion pipeline featuring UNet, variational autoencoder (VAE), and CLIP text encoder for effective text-to-image conditioning.
-- **Distributed, Cloud-Native Training**: Supports DeepSpeed-powered training on AWS SageMaker for rapid, elastic scaling across multiple GPUs in the cloud.
+- **Advanced Modeling**: Integrates a state-of-the-art diffusion pipeline featuring UNet for noise prediction at time step t with text-to-image guidance, variational autoencoder (VAE) for latent space encoding, and CLIP text encoder for effective text-to-image conditioning.
+- **Distributed, Cloud-Native Training**: DeepSpeed-powered distributed training on AWS SageMaker for rapid, elastic scaling across multiple GPUs in the cloud.
 - **Centralized Experiment Tracking**: MLflow on DagsHub integration enables centralized, automatic logging of experiments, hyperparameters, model checkpoints, and metrics for complete reproducibility.
 - **Seamless Deployment**: Exports trained models to ONNX format for efficient, hardware-agnostic inference. TorchServe integration delivers production-ready API endpoints.
 - **End-to-End Automation & Orchestration**: Apache Airflow DAGs manage data uploads to S3 -> SageMaker distributed training -> Model download using DagsHub and S3 -> ONNX export, ensuring a full ML lifecycle.
+- **Scalable, Modular Architecture**: The pipeline is designed for extensibility and maintainability, with a modular architecture that enables easy integration of new components. DAG -> Orchestration -> Utilities. DAG performs each step of the pipeline, Orchestrators collect data from config and executes utility functions, Utilities perform the actual work.
 
 
 ## 🔧 Quickstart
