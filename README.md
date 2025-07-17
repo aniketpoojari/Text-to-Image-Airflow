@@ -25,45 +25,7 @@ docker-compose up -d              # launches Airflow and dependencies
 
 ## 📌 Results
 
-| Metric              | Value           |
+| Metric              | Value          |
 |---------------------|----------------|
 | Validation VAE Loss | 0.0268         |
 | Diffuser Loss       | 0.0241         |
-| Best Run ID         | mlflow-uuid... |
-| Inference Time      | ~53 ms/sample  |
-
-## 📁 Directory Structure
-
-```
-├── dags/
-│   └── ml_training_dag.py         # Airflow DAG for orchestrating full pipeline
-├── orchestrators/                 # Handles all configurations and utiluty functions outputs
-│   ├── data_orchestrator.py
-│   ├── training_orchestrator.py
-│   ├── model_orchestrator.py
-│   └── conversion_orchestrator.py
-├── utils/                         # Data loaders, upload/download, training logic
-│   ├── code/
-│   │   ├── dataloader.py                   # Text-Image dataset loader
-│   │   └── training_sagemaker_deepspeed.py # Distributed DeepSpeed training logic
-|   |   └── requirements.txt                # Python dependencies
-│   ├── data_uploader.py           # Upload data to S3
-│   ├── model_downloader.py        # Download best model
-│   └── model_converter.py         # ONNX export for TorchServe
-|   └── trainin_manager.py         # triggers training job on AWS SageMaker
-├── config/
-│   └── pipeline_config.yaml       # All model/pipeline hyperparameters
-├── Dockerfile
-├── docker-compose.yaml
-├── README.md
-├── requirements.txt
-└── .env                           # Environment variables
-
-```
-
-## ⚙️ Example Airflow Pipeline Tasks
-
-- Upload dataset to AWS S3
-- Trigger distributed SageMaker training job (DeepSpeed)
-- Download best model run referring DagsHub and S3 model download.
-- Export models (VAE, CLIP encoder, UNet) to ONNX for TorchServe deployment
