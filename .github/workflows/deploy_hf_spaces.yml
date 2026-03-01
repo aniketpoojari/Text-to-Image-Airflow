@@ -1,0 +1,73 @@
+name: Deploy to HuggingFace Spaces
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # Run the full test suite first — only deploy on green
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: pip
+
+      - name: Install CPU-only PyTorch
+        run: |
+          pip install torch==2.0.0+cpu torchvision==0.15.1+cpu \
+            --index-url https://download.pytorch.org/whl/cpu
+
+      - name: Install project dependencies
+        run: |
+          pip install \
+            transformers==4.33.2 \
+            diffusers==0.21.4 \
+            Pillow==10.0.1 \
+            pydantic==1.10.13 \
+            PyYAML==6.0.1 \
+            pandas==2.1.1 \
+            numpy==1.24.4 \
+            mlflow==2.8.1 \
+            boto3==1.28.85 \
+            tqdm==4.66.1 \
+            huggingface_hub \
+            pytest \
+            pytest-mock
+
+      - name: Run tests
+        run: pytest tests/ -v --tb=short
+        env:
+          TRANSFORMERS_OFFLINE: "1"
+          HF_DATASETS_OFFLINE: "1"
+
+  deploy:
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history required for git push
+
+      - name: Push to HuggingFace Spaces
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          # Set HF_SPACE_REPO in GitHub → Settings → Variables → Actions
+          # e.g. "your-username/text-to-image-flowers"
+          HF_SPACE_REPO: ${{ vars.HF_SPACE_REPO }}
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+
+          # Add HF Spaces remote with the write token
+          git remote add hf "https://user:${HF_TOKEN}@huggingface.co/spaces/${HF_SPACE_REPO}"
+
+          # Force-push needed: HF Spaces UI commits diverge from GitHub history
+          git push hf HEAD:main --force

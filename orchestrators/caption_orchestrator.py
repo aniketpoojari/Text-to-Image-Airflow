@@ -1,47 +1,41 @@
 import yaml
 import time
 from .config_models import PipelineConfig, TaskResult
-from utils.model_converter import ModelConverter
+from utils.caption_generator import CaptionGenerator
 
 
-class ConversionOrchestrator:
-    """Orchestrator for model conversion operations"""
+class CaptionOrchestrator:
+    """Orchestrator for Florence-2 caption generation"""
 
     def __init__(self, config_path: str):
         self.config_path = config_path
         self.config = self._load_and_validate_config()
-        self.model_converter = ModelConverter()
+        self.caption_generator = CaptionGenerator()
 
     def _load_and_validate_config(self) -> PipelineConfig:
         with open(self.config_path, 'r') as file:
             config_data = yaml.safe_load(file)
         return PipelineConfig(**config_data)
 
-    def execute_conversion(self) -> dict:
+    def execute_caption_generation(self) -> dict:
         start_time = time.time()
 
         try:
-            image_size = tuple(map(int, self.config.vae.image_size.split(",")))
-
-            result = self.model_converter.convert_to_torchserve(
-                diffuser_path="models/diffuser.pth",
-                output_dir="models",
-                image_size=image_size,
-            )
+            result = self.caption_generator.generate_captions(self.config)
 
             task_result = TaskResult(
-                task_name="model_conversion",
+                task_name="caption_generation",
                 status="success",
-                message="Model conversion completed successfully",
+                message=f"Caption generation complete. Generated {result['generated']} captions.",
                 artifacts=result,
                 execution_time=time.time() - start_time,
             )
 
         except Exception as e:
             task_result = TaskResult(
-                task_name="model_conversion",
+                task_name="caption_generation",
                 status="failed",
-                message=f"Model conversion failed: {str(e)}",
+                message=f"Caption generation failed: {str(e)}",
                 execution_time=time.time() - start_time,
             )
 

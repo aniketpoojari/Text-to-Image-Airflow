@@ -1,0 +1,5 @@
+torch==2.0.0
+torchvision==0.15.1
+transformers==4.33.2
+diffusers==0.21.4
+sagemaker==2.178.0

@@ -1,11 +1,16 @@
-torch==2.0.0
-torchvision==0.15.1
-transformers==4.33.2
-sagemaker==2.178.0
-apache-airflow
-mlflow
-pandas
-numpy
-pydantic
-PyYAML
-onnx
+mlflow==2.8.1
+pandas==2.1.1
+numpy==1.24.4
+pydantic==1.10.13
+PyYAML==6.0.1
+onnx==1.14.1
+onnxruntime==1.16.1
+boto3==1.28.85
+Pillow==10.0.1
+tqdm==4.66.1
+huggingface_hub==0.21.3
+pytest>=7.0.0
+pytest-mock>=3.12.0
+# TensorRT is NOT listed here — install separately matching your CUDA version:
+#   pip install tensorrt==8.6.1.post1   (CUDA 11.x)
+#   pip install tensorrt==10.0.1        (CUDA 12.x)

@@ -38,25 +38,28 @@ class DataUploader:
             else:
                 upload_file = local_path
                 s3_key = s3_key or os.path.basename(local_path)
-            
+
+            # Capture size before upload (and before any cleanup)
+            file_size = os.path.getsize(upload_file) if os.path.exists(upload_file) else 0
+
             # Upload to S3
             print(f"Uploading {upload_file} to s3://{bucket_name}/{s3_key}")
-            
+
             self.s3_client.upload_file(
                 upload_file,
                 bucket_name,
                 s3_key
             )
-            
+
             # Clean up temporary zip file if created
             if os.path.isdir(local_path) and os.path.exists(zip_path):
                 os.remove(zip_path)
-            
+
             return {
                 "upload_status": "completed",
                 "s3_path": f"s3://{bucket_name}/{s3_key}",
                 "local_path": local_path,
-                "file_size": os.path.getsize(upload_file) if os.path.exists(upload_file) else 0
+                "file_size": file_size
             }
             
         except ClientError as e:

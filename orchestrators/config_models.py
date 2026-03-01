@@ -1,6 +1,13 @@
 from pydantic import BaseModel, Field, validator
 from typing import Optional, Dict, Any
-from datetime import datetime
+
+
+class CaptionConfig(BaseModel):
+    """Configuration for Florence-2 caption generation"""
+    model_name: str = Field(description="HuggingFace model name for caption generation")
+    batch_size: int = Field(gt=0, description="Batch size for caption generation")
+    data_path: str = Field(description="Path to the data directory containing images/")
+
 
 class DataConfig(BaseModel):
     """Configuration for data processing"""
@@ -8,17 +15,17 @@ class DataConfig(BaseModel):
     val_size: int = Field(gt=0, description="Number of validation samples")
     raw_data_path: str = Field(description="Path to raw data")
 
+
 class VAEConfig(BaseModel):
-    """Configuration for VAE model"""
+    """Configuration for VAE model (frozen pretrained, image_size used for dataloader)"""
     image_size: str = Field(description="VAE image size as comma-separated string")
-    learning_rate: float = Field(gt=0, description="VAE learning rate")
-    
+
     @validator('image_size')
     def validate_image_size(cls, v):
-        
         if not v or ',' not in v:
             raise ValueError('Must be comma-separated string')
         return v
+
 
 class UNetConfig(BaseModel):
     """Configuration for UNet model"""
@@ -37,26 +44,32 @@ class UNetConfig(BaseModel):
     time_embedding_type: str = Field(description="Time embedding type")
     act_fn: str = Field(description="Activation function")
     learning_rate: float = Field(gt=0, description="UNet learning rate")
-    
+
     @validator('image_size', 'down_block_types', 'up_block_types', 'block_out_channels')
     def validate_comma_separated(cls, v):
         if not v or ',' not in v:
             raise ValueError('Must be comma-separated string')
         return v
 
+
 class DDPMSchedulerConfig(BaseModel):
     """Configuration for DDPM Scheduler"""
     T: int = Field(gt=0, description="Number of diffusion timesteps")
+    beta_schedule: str = Field(default="squaredcos_cap_v2", description="Beta noise schedule type")
+
 
 class CLIPConfig(BaseModel):
     """Configuration for CLIP model"""
     max_length: int = Field(gt=0, description="Maximum text length")
+
 
 class TrainingConfig(BaseModel):
     """Configuration for training parameters"""
     batch_size: int = Field(gt=0, description="Training batch size")
     weight_decay: float = Field(ge=0, description="Weight decay")
     num_epochs: int = Field(gt=0, description="Number of training epochs")
+    cfg_dropout_prob: float = Field(ge=0.0, le=1.0, description="CFG unconditional dropout probability")
+
 
 class MLflowConfig(BaseModel):
     """Configuration for MLflow tracking"""
@@ -67,6 +80,7 @@ class MLflowConfig(BaseModel):
     s3_mlruns_bucket: str = Field(description="S3 bucket for MLflow artifacts")
     tracking_username: str = Field(description="MLflow tracking username")
     tracking_password: str = Field(description="MLflow tracking password")
+
 
 class SageMakerConfig(BaseModel):
     """Configuration for SageMaker training"""
@@ -82,8 +96,10 @@ class SageMakerConfig(BaseModel):
     entry_point: str = Field(description="Training script entry point")
     source_dir: str = Field(description="Source directory")
 
+
 class PipelineConfig(BaseModel):
     """Main configuration combining all components"""
+    caption_generator: CaptionConfig
     data: DataConfig
     vae: VAEConfig
     unet: UNetConfig
@@ -93,9 +109,11 @@ class PipelineConfig(BaseModel):
     mlflow: MLflowConfig
     sagemaker: SageMakerConfig
 
+
 class TaskResult(BaseModel):
     """Result model for task execution"""
     task_name: str = Field(description="Task name")
     status: str = Field(description="Task status")
     message: str = Field(description="Task message")
+    artifacts: Optional[Dict[str, Any]] = Field(default=None, description="Task artifacts")
     execution_time: Optional[float] = Field(description="Execution time in seconds")
