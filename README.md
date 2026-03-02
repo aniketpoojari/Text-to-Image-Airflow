@@ -1,22 +1,8 @@
----
-title: Text to Image Generator
-emoji: 🌸
-colorFrom: pink
-colorTo: purple
-sdk: streamlit
-app_file: app.py
-pinned: false
----
-
-# 🧠 Diffusion-Based Text-to-Image Generation
-
-[![HuggingFace Space](https://img.shields.io/badge/HuggingFace-Space-orange)](https://huggingface.co/spaces/aniketp2009gmail/text-to-image-flowers)
+# 🧠 Diffusion-Based Text-to-Image Generation (Airflow Orchestration)
 
 A latent diffusion pipeline built from scratch to generate realistic images from text prompts. It uses three core components: a **CLIP text encoder** to understand the prompt, a **Variational Autoencoder (VAE)** to compress images into a latent space, and a **Cross-Attentional UNet** to iteratively remove noise and form the final image.
 
-The system is trained on 8K image-caption pairs using DeepSpeed distributed training on AWS SageMaker. The entire workflow is automated via Apache Airflow, with MLflow tracking experiments and hyperparameters.
-
-**🚀 Try it live on Hugging Face Spaces: [Text-to-Image Flowers Generator](https://huggingface.co/spaces/aniketp2009gmail/text-to-image-flowers)**
+The system is trained on 8K image-caption pairs using DeepSpeed distributed training on AWS SageMaker. The entire workflow is automated via **Apache Airflow**, with **MLflow** tracking experiments and hyperparameters.
 
 ## 🚀 Features
 
